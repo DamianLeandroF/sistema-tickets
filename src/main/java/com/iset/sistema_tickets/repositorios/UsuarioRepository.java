@@ -1,0 +1,13 @@
+package com.iset.sistema_tickets.repositorios;
+
+import com.iset.sistema_tickets.modelo.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
+    List<Usuario> findByTipo(String tipo);
+    java.util.Optional<Usuario> findByEmail(String email);
+}
