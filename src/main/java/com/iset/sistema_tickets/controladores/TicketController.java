@@ -25,6 +25,16 @@ public class TicketController {
         return ResponseEntity.ok(tickets.stream().map(this::convertToDTO).collect(Collectors.toList()));
     }
 
+    @GetMapping("/pendientes")
+    public ResponseEntity<List<TicketDTO>> listarPendientes() {
+        List<Ticket> tickets = ticketService.listarTodos().stream()
+                .filter(t -> (t.getEstado() == com.iset.sistema_tickets.modelo.EstadoTicket.PENDIENTE
+                        || t.getEstado() == com.iset.sistema_tickets.modelo.EstadoTicket.REABIERTO)
+                        && t.getTecnicoActual() == null)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(tickets.stream().map(this::convertToDTO).collect(Collectors.toList()));
+    }
+
     @GetMapping("/trabajador/{id}")
     public ResponseEntity<List<TicketDTO>> listarPorTrabajador(@PathVariable Integer id) {
         List<Ticket> tickets = ticketService.listarPorTrabajador(id);
@@ -77,6 +87,29 @@ public class TicketController {
         }
     }
 
+    @PutMapping("/{id}/reabrir-admin")
+    public ResponseEntity<?> reabrirPorAdmin(@PathVariable Long id) {
+        try {
+            Ticket ticket = ticketService.reabrirPorAdmin(id);
+            return ResponseEntity.ok(convertToDTO(ticket));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/estado/{estado}")
+    public ResponseEntity<?> listarPorEstado(@PathVariable String estado) {
+        try {
+            com.iset.sistema_tickets.modelo.EstadoTicket e = com.iset.sistema_tickets.modelo.EstadoTicket.valueOf(estado.toUpperCase());
+            List<Ticket> tickets = ticketService.listarTodos().stream()
+                    .filter(t -> t.getEstado() == e)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(tickets.stream().map(this::convertToDTO).collect(Collectors.toList()));
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body("Estado inválido: " + estado);
+        }
+    }
+
     private TicketDTO convertToDTO(Ticket ticket) {
         TicketDTO dto = new TicketDTO();
         dto.setId(ticket.getId());
@@ -92,6 +125,10 @@ public class TicketController {
         if (ticket.getTecnicoActual() != null) {
             dto.setTecnicoId(ticket.getTecnicoActual().getId());
             dto.setTecnicoNombre(ticket.getTecnicoActual().getNombre());
+        }
+        dto.setReabierto(ticket.isReabierto());
+        if (ticket.getTecnicoAnterior() != null) {
+            dto.setTecnicoAnteriorNombre(ticket.getTecnicoAnterior().getNombre());
         }
         
         // dto.setFechaCreacion(...) // Si agregamos fecha al modelo

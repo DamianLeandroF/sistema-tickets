@@ -30,28 +30,28 @@ public class DataSeeder implements CommandLineRunner {
             admin.setId(1);
             admin.setNombre("Administrador");
             admin.setEmail("admin@iset.com");
-            admin.setPassword("admin123");
+            admin.setPassword(String.valueOf(admin.getId()));
             admin.setTipo("admin");
             admin.setBloqueado(false);
-            admin.setForzarCambio(false);
+            admin.setForzarCambio(true);
 
             Usuario tecnico1 = new Usuario();
             tecnico1.setId(2);
             tecnico1.setNombre("Juan Técnico");
             tecnico1.setEmail("juan@iset.com");
-            tecnico1.setPassword("tecnico123");
+            tecnico1.setPassword(String.valueOf(tecnico1.getId()));
             tecnico1.setTipo("tecnico");
             tecnico1.setBloqueado(false);
-            tecnico1.setForzarCambio(false);
+            tecnico1.setForzarCambio(true);
 
             Usuario trabajador1 = new Usuario();
             trabajador1.setId(3);
             trabajador1.setNombre("Pedro Trabajador");
             trabajador1.setEmail("pedro@iset.com");
-            trabajador1.setPassword("trabajador123");
+            trabajador1.setPassword(String.valueOf(trabajador1.getId()));
             trabajador1.setTipo("trabajador");
             trabajador1.setBloqueado(false);
-            trabajador1.setForzarCambio(false);
+            trabajador1.setForzarCambio(true);
 
             usuarioRepository.saveAll(Arrays.asList(admin, tecnico1, trabajador1));
 

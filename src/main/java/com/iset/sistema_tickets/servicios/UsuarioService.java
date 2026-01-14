@@ -40,15 +40,6 @@ public class UsuarioService {
         }
 
         if (!user.getPassword().equals(password)) {
-            // Incrementar fallas si es técnico (o todos?)
-            // La regla de negocio de 3 fallas suele ser para técnicos, pero asumiremos todos por seguridad o segun tipo.
-            // "Regla de las 3 fallas" en SistemaTicketsApplication habla de tecnico.
-            
-            user.setFallas(user.getFallas() + 1);
-            if (user.getFallas() >= 3) {
-                user.setBloqueado(true);
-            }
-            usuarioRepository.save(user);
             throw new Exception("Contraseña incorrecta");
         }
 
@@ -56,6 +47,35 @@ public class UsuarioService {
         user.setFallas(0);
         usuarioRepository.save(user);
         return user;
+    }
+
+    public Usuario crearUsuario(Integer id, String nombre, String email, String tipo) throws Exception {
+        if (usuarioRepository.existsById(id)) {
+            throw new Exception("Ya existe un usuario con ese ID");
+        }
+        Usuario u = new Usuario();
+        u.setId(id);
+        u.setNombre(nombre);
+        u.setEmail(email);
+        u.setTipo(tipo);
+        u.setPassword(String.valueOf(id));
+        u.setForzarCambio(true);
+        u.setBloqueado(false);
+        u.setFallas(0);
+        u.setMarcasRetorno(0);
+        return usuarioRepository.save(u);
+    }
+
+    public Usuario bloquear(Integer id) throws Exception {
+        Usuario u = usuarioRepository.findById(id).orElseThrow(() -> new Exception("Usuario no encontrado"));
+        u.setBloqueado(true);
+        return usuarioRepository.save(u);
+    }
+
+    public Usuario desbloquear(Integer id) throws Exception {
+        Usuario u = usuarioRepository.findById(id).orElseThrow(() -> new Exception("Usuario no encontrado"));
+        u.setBloqueado(false);
+        return usuarioRepository.save(u);
     }
 
     public void actualizarPassword(Integer id, String nuevaPassword) throws Exception {

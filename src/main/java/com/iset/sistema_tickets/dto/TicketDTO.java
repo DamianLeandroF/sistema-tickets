@@ -10,6 +10,8 @@ public class TicketDTO {
     private Integer tecnicoId;
     private String tecnicoNombre;
     private String fechaCreacion;
+    private boolean reabierto;
+    private String tecnicoAnteriorNombre;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -29,4 +31,8 @@ public class TicketDTO {
     public void setTecnicoNombre(String tecnicoNombre) { this.tecnicoNombre = tecnicoNombre; }
     public String getFechaCreacion() { return fechaCreacion; }
     public void setFechaCreacion(String fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+    public boolean isReabierto() { return reabierto; }
+    public void setReabierto(boolean reabierto) { this.reabierto = reabierto; }
+    public String getTecnicoAnteriorNombre() { return tecnicoAnteriorNombre; }
+    public void setTecnicoAnteriorNombre(String tecnicoAnteriorNombre) { this.tecnicoAnteriorNombre = tecnicoAnteriorNombre; }
 }

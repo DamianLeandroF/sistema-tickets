@@ -20,6 +20,7 @@ export default function TicketCard({ ticket, onAction }) {
   // Mapeo de estados a colores para los badges
   const estadoColors = {
     pendiente: 'bg-yellow-100 text-yellow-800',
+    reabierto: 'bg-red-100 text-red-800',
     en_proceso: 'bg-blue-100 text-blue-800',
     resuelto: 'bg-green-100 text-green-800',
     finalizado: 'bg-gray-100 text-gray-800',
@@ -28,6 +29,7 @@ export default function TicketCard({ ticket, onAction }) {
   // Mapeo de estados a textos legibles
   const estadoTexts = {
     pendiente: 'Pendiente',
+    reabierto: 'Reabierto',
     en_proceso: 'En Proceso',
     resuelto: 'Resuelto',
     finalizado: 'Finalizado',
@@ -37,6 +39,7 @@ export default function TicketCard({ ticket, onAction }) {
   const getActionButton = () => {
     switch (ticket.estado) {
       case 'pendiente':
+      case 'reabierto':
         return (
           <button
             onClick={() => onAction(ticket.id, 'atender')}

@@ -32,7 +32,9 @@ public class AuthController {
                 user.getId(), 
                 user.getNombre(), 
                 user.getEmail(), 
-                user.getTipo()
+                user.getTipo(),
+                user.getFallas(),
+                user.getMarcasRetorno()
             );
 
             return ResponseEntity.ok(new LoginResponse(token, userDTO));

@@ -18,7 +18,12 @@ public class Ticket {
     private Usuario tecnicoActual;
 
     @ManyToOne
+    private Usuario tecnicoAnterior;
+
+    @ManyToOne
     private Usuario trabajador;
+
+    private boolean reabierto = false;
 
     public Ticket() {}
 
@@ -44,6 +49,12 @@ public class Ticket {
     public Usuario getTecnicoActual() { return tecnicoActual; }
     public void setTecnicoActual(Usuario tecnicoActual) { this.tecnicoActual = tecnicoActual; }
 
+    public Usuario getTecnicoAnterior() { return tecnicoAnterior; }
+    public void setTecnicoAnterior(Usuario tecnicoAnterior) { this.tecnicoAnterior = tecnicoAnterior; }
+
     public Usuario getTrabajador() { return trabajador; }
     public void setTrabajador(Usuario trabajador) { this.trabajador = trabajador; }
+
+    public boolean isReabierto() { return reabierto; }
+    public void setReabierto(boolean reabierto) { this.reabierto = reabierto; }
 }
