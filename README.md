@@ -1,350 +1,218 @@
-# Sistema de Tickets - Implementación Completa ✅
+# 🎫 Sistema de Gestión de Tickets
 
-## 🎯 Estado del Proyecto
+Sistema completo de gestión de tickets con roles diferenciados (Administrador, Técnico, Trabajador) desarrollado con Spring Boot y React.
 
-**TODAS LAS CONDICIONES DE LA CONSIGNA HAN SIDO IMPLEMENTADAS**
+## 📋 Características Principales
 
-Este proyecto implementa un sistema completo de gestión de tickets para una empresa consultora, cumpliendo con todos los requisitos especificados en la consigna.
+### 👨‍💼 Administrador
+- ✅ Gestión completa de usuarios (bloquear/desbloquear)
+- ✅ Blanqueo de contraseñas
+- ✅ Visualización de estadísticas de técnicos
+- ✅ Monitoreo de fallas y marcas de retorno
+- ✅ Vista de todos los tickets del sistema
 
----
+### 🔧 Técnico
+- ✅ Visualización de tickets pendientes (NO_ATENDIDO y REABIERTO)
+- ✅ Asignación de tickets (máximo 3 simultáneos)
+- ✅ Resolución de tickets
+- ✅ Solicitud de reapertura de tickets
+- ✅ Sistema de fallas (bloqueado automático al llegar a 3)
 
-## 📚 Documentación
+### 👷 Trabajador
+- ✅ Creación de tickets
+- ✅ Visualización de sus tickets
+- ✅ Confirmación o rechazo de resoluciones
+- ✅ Seguimiento del estado de tickets
 
-### Archivos de Documentación Creados
+## 🛠️ Tecnologías
 
-1. **[RESUMEN_IMPLEMENTACION.md](./RESUMEN_IMPLEMENTACION.md)**
-   - Lista completa de todas las condiciones implementadas
-   - Archivos modificados y creados
-   - Validaciones clave del sistema
+### Backend
+- **Java 17**
+- **Spring Boot 3.x**
+- **Spring Data JPA**
+- **MySQL**
+- **Maven**
 
-2. **[DOCUMENTACION_COMPLETA.md](./DOCUMENTACION_COMPLETA.md)**
-   - Documentación técnica detallada
-   - Descripción de todas las funcionalidades
-   - Flujos de trabajo completos
-   - Modelo de datos
+### Frontend
+- **React 18**
+- **React Router DOM**
+- **Vite**
+- **TailwindCSS** (opcional)
+- **Lucide React** (iconos)
 
-3. **[API_REFERENCE.md](./API_REFERENCE.md)**
-   - Referencia rápida de todos los endpoints
-   - Ejemplos de uso
-   - Casos de uso comunes
-   - Errores frecuentes
+## 📦 Instalación
 
-4. **[TESTING_CHECKLIST.md](./TESTING_CHECKLIST.md)**
-   - Checklist completo de pruebas
-   - Casos de prueba para cada funcionalidad
-   - Flujos completos a verificar
-
----
-
-## ✅ Requisitos Implementados
-
-### Gestión de Usuarios
-
-- ✅ **Tres tipos de usuarios**: Administrador, Técnico, Trabajador
-- ✅ **Login con ID o email** y contraseña
-- ✅ **Contraseña inicial = ID** del usuario
-- ✅ **Forzar cambio de contraseña** al crear usuario o blanquear
-- ✅ **Cambio de contraseña** disponible para todos los usuarios
-
-### Trabajadores
-
-- ✅ **Crear tickets** con título y descripción
-- ✅ **Ver lista de tickets propios** (no finalizados)
-- ✅ **Ver estado y técnico asignado** de cada ticket
-- ✅ **Confirmar o rechazar resolución** de tickets
-
-### Técnicos
-
-- ✅ **Ver tickets pendientes** (NO_ATENDIDO y REABIERTO)
-- ✅ **Tomar tickets** (máximo 3 simultáneos)
-- ✅ **Marcar tickets como RESUELTO**
-- ✅ **Solicitar reapertura** de tickets
-- ✅ **Sistema de fallas y marcas**
-- ✅ **Bloqueo automático** al alcanzar 3 fallas
-- ✅ **Limpieza de fallas** al resolver tickets reabiertos
-
-### Administradores
-
-- ✅ **Crear usuarios** (trabajadores y técnicos)
-- ✅ **Bloquear/Desbloquear usuarios**
-- ✅ **Blanquear contraseñas** (resetear a ID)
-- ✅ **Reabrir tickets** a solicitud del técnico
-- ✅ **Ver estadísticas de técnicos** (fallas y marcas)
-- ✅ **Filtrar tickets por estado**
-- ✅ **Ver información completa** de todos los tickets
-
-### Estados de Tickets
-
-- ✅ **NO_ATENDIDO**: Ticket recién creado
-- ✅ **ATENDIDO**: Ticket tomado por un técnico
-- ✅ **RESUELTO**: Técnico marcó como resuelto
-- ✅ **FINALIZADO**: Trabajador confirmó la resolución
-- ✅ **REABIERTO**: Trabajador rechazó o admin reabrió
-
-### Reglas de Negocio
-
-- ✅ **Máximo 3 tickets por técnico** (validación estricta)
-- ✅ **Solo trabajadores crean tickets**
-- ✅ **Técnicos NO crean tickets**
-- ✅ **Bloqueo automático por 3 fallas**
-- ✅ **Sistema de marcas de retorno**
-- ✅ **Limpieza de fallas al resolver reabiertos**
-- ✅ **Trazabilidad de técnico anterior**
-
----
-
-## 🚀 Inicio Rápido
-
-### Prerrequisitos
-
+### Requisitos Previos
 - Java 17 o superior
-- MySQL 8.0 o superior
-- Maven (incluido wrapper)
+- Node.js 18 o superior
+- MySQL 5.7 o superior
+- Maven (incluido en el proyecto con wrapper)
 
-### Configuración de Base de Datos
+### 1. Configurar Base de Datos
 
-1. Crear base de datos:
 ```sql
 CREATE DATABASE sistema_tickets;
 ```
 
-2. Configurar credenciales en `tpFinal/src/main/resources/application.properties`:
+### 2. Configurar Backend
+
+1. Navegar a la carpeta del backend:
+```bash
+cd tpFinal
+```
+
+2. Configurar `application.properties`:
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/sistema_tickets
 spring.datasource.username=root
-spring.datasource.password=
+spring.datasource.password=tu_password
+spring.jpa.hibernate.ddl-auto=update
 ```
 
-### Ejecutar la Aplicación
-
+3. Ejecutar el backend:
 ```bash
-cd tpFinal
-./mvnw.cmd spring-boot:run
+# Windows
+.\mvnw.cmd spring-boot:run
+
+# Linux/Mac
+./mvnw spring-boot:run
 ```
 
-La aplicación estará disponible en: `http://localhost:8080`
+El backend estará disponible en `http://localhost:8080`
 
-### Usuarios de Prueba
+### 3. Configurar Frontend
 
-```
-Administrador:
-  Email: admin@iset.com
-  Password: 1
-
-Técnico:
-  Email: juan@iset.com
-  Password: 2
-
-Trabajador:
-  Email: pedro@iset.com
-  Password: 3
+1. Navegar a la carpeta del frontend:
+```bash
+cd "Frontend Ticket Management App"
 ```
 
----
+2. Instalar dependencias:
+```bash
+npm install
+```
 
-## 📡 Endpoints Principales
+3. Ejecutar el frontend:
+```bash
+npm run dev
+```
 
-### Tickets
+El frontend estará disponible en `http://localhost:5173`
+
+## 👥 Usuarios por Defecto
+
+El sistema crea automáticamente 3 usuarios de prueba:
+
+| Rol | Email | Password |
+|-----|-------|----------|
+| Administrador | admin@iset.com | 1 |
+| Técnico | juan@iset.com | 2 |
+| Trabajador | pedro@iset.com | 3 |
+
+## 🔐 Reglas de Negocio
+
+### Sistema de Fallas para Técnicos
+- Un técnico acumula una **falla** cuando un trabajador rechaza su resolución
+- Al llegar a **3 fallas**, el técnico es **bloqueado automáticamente**
+- Solo un administrador puede desbloquear al técnico
+
+### Límite de Tickets por Técnico
+- Un técnico puede tener máximo **3 tickets** asignados simultáneamente
+- Estados que cuentan: ATENDIDO y RESUELTO
+- Debe resolver al menos uno antes de tomar otro
+
+### Marcas de Retorno
+- Se registra cuando un técnico solicita la reapertura de un ticket
+- Sirve para estadísticas y evaluación de desempeño
+
+### Estados de Tickets
+1. **No atendido**: Ticket recién creado
+2. **Atendido**: Asignado a un técnico
+3. **Resuelto**: Técnico marcó como resuelto, esperando confirmación
+4. **Finalizado**: Trabajador confirmó la resolución
+5. **Reabierto**: Trabajador rechazó la resolución
+
+## 📁 Estructura del Proyecto
 
 ```
-POST   /api/tickets/crear/{trabajadorId}              - Crear ticket
-GET    /api/tickets/estado/{estado}                   - Filtrar por estado
-GET    /api/tickets/trabajador/{trabajadorId}         - Tickets de trabajador
-GET    /api/tickets/tecnico/{tecnicoId}               - Tickets de técnico
-PUT    /api/tickets/{ticketId}/asignar/{tecnicoId}    - Asignar a técnico
-PUT    /api/tickets/{ticketId}/resolver/{tecnicoId}   - Marcar resuelto
-PUT    /api/tickets/{ticketId}/confirmar/{trabajadorId} - Confirmar/rechazar
-PUT    /api/tickets/{ticketId}/reabrir/{adminId}      - Reabrir (admin)
-GET    /api/tickets/stats                             - Estadísticas
+sistema-tickets/
+├── tpFinal/                          # Backend Spring Boot
+│   ├── src/main/java/
+│   │   └── com/grupo/tpFinal/
+│   │       ├── config/               # Configuraciones
+│   │       ├── controller/           # Controladores REST
+│   │       ├── enums/                # Enumeraciones
+│   │       ├── excepciones/          # Excepciones personalizadas
+│   │       ├── model/                # Entidades JPA
+│   │       ├── repository/           # Repositorios
+│   │       └── service/              # Lógica de negocio
+│   └── src/main/resources/
+│       └── application.properties    # Configuración
+│
+└── Frontend Ticket Management App/  # Frontend React
+    └── src/
+        ├── app/
+        │   ├── components/           # Componentes reutilizables
+        │   ├── pages/                # Páginas/Vistas
+        │   └── App.tsx               # Componente principal
+        └── index.css                 # Estilos globales
 ```
+
+## 🔌 API Endpoints
 
 ### Usuarios
+- `POST /api/usuarios/login` - Iniciar sesión
+- `GET /api/usuarios` - Listar todos los usuarios (Admin)
+- `PUT /api/usuarios/{id}/bloquear/{adminId}` - Bloquear usuario
+- `PUT /api/usuarios/{id}/desbloquear/{adminId}` - Desbloquear usuario
+- `PUT /api/usuarios/{id}/blanquear/{adminId}` - Blanquear contraseña
+- `PUT /api/usuarios/{id}/update-password` - Cambiar contraseña
 
-```
-POST   /api/users/crear/{adminId}                     - Crear usuario
-PUT    /api/users/{userId}/bloquear/{adminId}         - Bloquear
-PUT    /api/users/{userId}/desbloquear/{adminId}      - Desbloquear
-PUT    /api/users/{userId}/blanquear-password/{adminId} - Resetear password
-GET    /api/users/tecnico/{tecnicoId}/stats/{adminId} - Estadísticas técnico
-GET    /api/users/rol/{rol}                           - Listar por rol
-PUT    /api/users/change-password                     - Cambiar contraseña
-```
+### Tickets
+- `GET /api/tickets` - Listar todos los tickets (Admin)
+- `GET /api/tickets/trabajador/{id}` - Tickets de un trabajador
+- `GET /api/tickets/tecnico/{id}` - Tickets de un técnico
+- `GET /api/tickets/estado/{estado}` - Tickets por estado
+- `POST /api/tickets/crear/{trabajadorId}` - Crear ticket
+- `PUT /api/tickets/{id}/asignar/{tecnicoId}` - Asignar ticket
+- `PUT /api/tickets/{id}/resolver/{tecnicoId}` - Resolver ticket
+- `PUT /api/tickets/{id}/confirmar/{trabajadorId}` - Confirmar/Rechazar resolución
+- `PUT /api/tickets/{id}/solicitar-reapertura/{tecnicoId}` - Solicitar reapertura
 
-### Autenticación
+## 🎨 Capturas de Pantalla
 
-```
-POST   /api/auth/login                                - Login
-```
+### Login
+![Login](docs/screenshots/login.png)
 
----
+### Dashboard Técnico
+![Dashboard](docs/screenshots/dashboard-tecnico.png)
 
-## 🏗️ Arquitectura
+### Panel de Administración
+![Admin](docs/screenshots/admin-panel.png)
 
-### Estructura del Proyecto
+## 🤝 Contribuir
 
-```
-tpFinal/
-├── src/main/java/com/grupo/tpFinal/
-│   ├── model/              # Entidades JPA
-│   │   ├── Usuario.java
-│   │   └── Ticket.java
-│   ├── repository/         # Repositorios JPA
-│   │   ├── UsuarioRepository.java
-│   │   └── TicketRepository.java
-│   ├── service/            # Lógica de negocio
-│   │   ├── UsuarioService.java
-│   │   └── TicketService.java
-│   ├── controller/         # Controladores REST
-│   │   ├── UserController.java
-│   │   ├── TicketController.java
-│   │   └── AuthController.java
-│   ├── dto/                # Data Transfer Objects
-│   ├── enums/              # Enumeraciones
-│   │   ├── Rol.java
-│   │   └── EstadoTicket.java
-│   └── config/             # Configuración
-│       └── DataSeeder.java
-└── src/main/resources/
-    └── application.properties
-```
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
 
-### Tecnologías Utilizadas
+## 📝 Licencia
 
-- **Spring Boot 3.x** - Framework principal
-- **Spring Data JPA** - Persistencia
-- **MySQL** - Base de datos
-- **Maven** - Gestión de dependencias
-- **Hibernate** - ORM
+Este proyecto está bajo la Licencia MIT.
+
+## 👨‍💻 Autor
+
+**Damian Leandro F**
+- GitHub: [@DamianLeandroF](https://github.com/DamianLeandroF)
+
+## 🙏 Agradecimientos
+
+- Spring Boot Documentation
+- React Documentation
+- Comunidad de desarrolladores
 
 ---
 
-## 🔄 Flujos de Trabajo
-
-### Flujo Exitoso de Ticket
-
-```
-1. Trabajador crea ticket → NO_ATENDIDO
-2. Técnico toma ticket → ATENDIDO
-3. Técnico marca resuelto → RESUELTO
-4. Trabajador confirma → FINALIZADO
-```
-
-### Flujo con Rechazo
-
-```
-1. Ticket en RESUELTO
-2. Trabajador rechaza → REABIERTO + falla al técnico
-3. Otro técnico toma → ATENDIDO
-4. Resuelve → RESUELTO
-5. Confirma → FINALIZADO + limpia 1 falla
-```
-
-### Flujo de Bloqueo
-
-```
-1. Técnico acumula 3 fallas
-2. Sistema bloquea automáticamente
-3. Técnico no puede tomar tickets
-4. Admin desbloquea → fallas = 0
-```
-
----
-
-## 🧪 Pruebas
-
-Ver [TESTING_CHECKLIST.md](./TESTING_CHECKLIST.md) para un checklist completo de pruebas.
-
-### Compilación
-
-```bash
-cd tpFinal
-./mvnw.cmd clean compile
-```
-
-**Estado:** ✅ Compilación exitosa
-
----
-
-## 📊 Validaciones Implementadas
-
-### TicketService
-
-- Solo trabajadores pueden crear tickets
-- Solo técnicos pueden atender tickets
-- Técnico no puede tener más de 3 tickets
-- Técnico bloqueado no puede atender
-- Solo técnico asignado puede resolver
-- Solo trabajador creador puede confirmar
-
-### UsuarioService
-
-- Solo admin puede crear usuarios
-- Solo admin puede bloquear/desbloquear
-- Solo admin puede blanquear passwords
-- Solo admin puede ver estadísticas
-- Bloqueo automático al alcanzar 3 fallas
-
----
-
-## 🎓 Cumplimiento de Consigna
-
-| Requisito | Implementado |
-|-----------|--------------|
-| Trabajador crea tickets | ✅ |
-| Técnico atiende tickets | ✅ |
-| Máximo 3 tickets por técnico | ✅ |
-| Estados correctos | ✅ |
-| Confirmación de resolución | ✅ |
-| Sistema de fallas | ✅ |
-| Bloqueo por 3 fallas | ✅ |
-| Marcas de retorno | ✅ |
-| Admin crea usuarios | ✅ |
-| Admin bloquea/desbloquea | ✅ |
-| Admin blanquea passwords | ✅ |
-| Admin reabre tickets | ✅ |
-| Admin ve estadísticas | ✅ |
-| Filtrado por estado | ✅ |
-| Contraseña inicial = ID | ✅ |
-| Forzar cambio de contraseña | ✅ |
-| Limpieza de falla | ✅ |
-
-**TOTAL: 17/17 requisitos implementados** ✅
-
----
-
-## 📝 Notas Importantes
-
-1. **Autenticación**: Sistema simplificado. En producción usar JWT.
-2. **Contraseñas**: En producción hashear con BCrypt.
-3. **Validaciones**: Todas las reglas de negocio están implementadas.
-4. **Frontend**: Backend listo para conectar con frontend.
-
----
-
-## 🔜 Próximos Pasos Sugeridos
-
-1. Implementar autenticación JWT completa
-2. Agregar validación de `forzarCambio` en login
-3. Hashear contraseñas con BCrypt
-4. Implementar frontend (React/Angular/Vue)
-5. Agregar tests unitarios
-6. Implementar sistema de notificaciones
-7. Agregar logs de auditoría
-
----
-
-## 👥 Contacto
-
-Para consultas sobre la implementación, revisar la documentación en:
-- [DOCUMENTACION_COMPLETA.md](./DOCUMENTACION_COMPLETA.md)
-- [API_REFERENCE.md](./API_REFERENCE.md)
-
----
-
-## 📄 Licencia
-
-Proyecto académico - Universidad/Instituto
-
----
-
-**Desarrollado cumpliendo 100% de los requisitos de la consigna** ✅
+⭐ Si te gusta este proyecto, dale una estrella en GitHub!
