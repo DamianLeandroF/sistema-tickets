@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
+import { apiFetch } from '../utils/api';
 
 /**
  * Componente Dashboard - Pantalla de inicio con resumen de tickets
@@ -29,7 +30,7 @@ export default function Dashboard() {
     const fetchStats = async () => {
       try {
         // Usar el endpoint de estadísticas del backend
-        const response = await fetch('http://localhost:8080/api/tickets/stats');
+        const response = await apiFetch('/api/tickets/stats');
         
         if (response.ok) {
           const data = await response.json();

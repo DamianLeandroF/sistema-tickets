@@ -1,11 +1,12 @@
 import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
-  // Recuperar el usuario del localStorage
+  // Recuperar usuario y token del localStorage (JWT)
   const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const token = localStorage.getItem('token');
   
-  // Si no hay sesión iniciada, redirigir al login
-  if (!user.id) {
+  // Si no hay sesión o token JWT, redirigir al login
+  if (!user.id || !token) {
     return <Navigate to="/" replace />;
   }
   

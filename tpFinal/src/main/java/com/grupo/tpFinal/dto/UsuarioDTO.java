@@ -1,24 +1,29 @@
 package com.grupo.tpFinal.dto;
 
+import com.grupo.tpFinal.enums.Rol;
+import com.grupo.tpFinal.model.Usuario;
+
 public class UsuarioDTO {
     private Long id;
     private String nombre;
     private String email;
-    private String rol;
+    private Rol rol;
     private int fallas;
     private int marcasRetorno;
     private boolean forzarCambio;
     private boolean bloqueado;
 
-    public UsuarioDTO(Long id, String nombre, String email, String rol, int fallas, int marcasRetorno, boolean forzarCambio, boolean bloqueado) {
-        this.id = id;
-        this.nombre = nombre;
-        this.email = email;
-        this.rol = rol;
-        this.fallas = fallas;
-        this.marcasRetorno = marcasRetorno;
-        this.forzarCambio = forzarCambio;
-        this.bloqueado = bloqueado;
+    public UsuarioDTO(Usuario usuario) {
+        this.id = usuario.getId();
+        this.nombre = usuario.getNombre();
+        this.email = usuario.getEmail();
+        this.fallas = usuario.getFallas();
+        this.marcasRetorno = usuario.getMarcasRetorno();
+        this.forzarCambio = usuario.isForzarCambio();
+        this.bloqueado = usuario.isBloqueado();
+        this.rol = usuario.getRol() != null
+                ? usuario.getRol()
+                : null;
     }
 
     public Long getId() { return id; }
@@ -27,8 +32,8 @@ public class UsuarioDTO {
     public void setNombre(String nombre) { this.nombre = nombre; }
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
-    public String getRol() { return rol; }
-    public void setRol(String rol) { this.rol = rol; }
+    public Rol getRol() { return rol; }
+    public void setRol(Rol rol) { this.rol = rol; }
     public int getFallas() { return fallas; }
     public void setFallas(int fallas) { this.fallas = fallas; }
     public int getMarcasRetorno() { return marcasRetorno; }

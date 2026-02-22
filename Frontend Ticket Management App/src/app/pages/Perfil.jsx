@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
+import { apiFetch } from '../utils/api';
 
 /**
  * Componente Perfil - Información del usuario
@@ -18,6 +19,8 @@ export default function Perfil() {
     nombre: '',
     email: '',
     rol: '',
+    fallas: 0,
+    marcasRetorno: 0,
   });
 
   const [loading, setLoading] = useState(true);
@@ -30,16 +33,38 @@ export default function Perfil() {
   const [pwdSubmitting, setPwdSubmitting] = useState(false);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user) {
+    const loadProfile = async () => {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+      let fallas = user.fallas ?? 0;
+      let marcasRetorno = user.marcasRetorno ?? 0;
+      // Para técnicos, obtener datos actualizados del backend
+      const rol = (user.rol || user.tipo || '').toLowerCase();
+      if (rol === 'tecnico') {
+        try {
+          const resp = await apiFetch('/api/usuarios/me');
+          if (resp.ok) {
+            const me = await resp.json();
+            fallas = me.fallas ?? 0;
+            marcasRetorno = me.marcasRetorno ?? 0;
+          }
+        } catch (e) {
+          console.warn('No se pudo obtener perfil actualizado', e);
+        }
+      }
       setUserInfo({
         id: user.id,
         nombre: user.nombre,
         email: user.email,
-        rol: user.rol || user.tipo // Soporta ambos formatos
+        rol: user.rol || user.tipo,
+        fallas,
+        marcasRetorno,
       });
-    }
-    setLoading(false);
+    };
+    loadProfile().finally(() => setLoading(false));
   }, []);
 
   const handleChangePassword = () => {
@@ -66,9 +91,8 @@ export default function Perfil() {
     }
     setPwdSubmitting(true);
     try {
-      const resp = await fetch(`http://localhost:8080/api/usuarios/${userInfo.id}/update-password`, {
+      const resp = await apiFetch(`/api/usuarios/${userInfo.id}/update-password`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newPassword: pwdNueva }),
       });
       if (resp.ok) {
@@ -100,11 +124,24 @@ export default function Perfil() {
       {/* Contenido principal */}
       <main className="flex-1 ml-64 p-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl text-gray-800 mb-2">
-            Mi Perfil
-          </h1>
-          <p className="text-gray-600">Información de tu cuenta</p>
+        <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl text-gray-800 mb-2">
+              Mi Perfil
+            </h1>
+            <p className="text-gray-600">Información de tu cuenta</p>
+          </div>
+          {/* Marcas/Fallas para técnicos */}
+          {(userInfo.rol === 'tecnico' || userInfo.rol === 'TECNICO') && (
+            <div className="flex gap-3 text-xs">
+              <span className="px-3 py-1.5 bg-red-50 text-red-700 rounded-lg border border-red-200 font-medium">
+                ⚠️ Fallas: {userInfo.fallas}
+              </span>
+              <span className="px-3 py-1.5 bg-yellow-50 text-yellow-800 rounded-lg border border-yellow-200 font-medium">
+                🔄 Marcas retorno: {userInfo.marcasRetorno}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Contenido del perfil */}

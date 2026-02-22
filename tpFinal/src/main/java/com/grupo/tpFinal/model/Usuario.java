@@ -22,7 +22,7 @@ public class Usuario {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipo")
+    @Column(name = "tipo", nullable = false)
     private Rol rol;
 
     @Column(name = "forzar_cambio")

@@ -4,6 +4,8 @@ import com.grupo.tpFinal.dto.PasswordDTO;
 import com.grupo.tpFinal.enums.Rol;
 import com.grupo.tpFinal.model.Usuario;
 import com.grupo.tpFinal.service.UsuarioService;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -103,6 +105,23 @@ public class UserController {
     @GetMapping("/tecnico/{tecnicoId}/stats/{adminId}")
     public Usuario obtenerEstadisticasTecnico(@PathVariable Long tecnicoId, @PathVariable Long adminId) {
         return usuarioService.obtenerEstadisticasTecnico(tecnicoId, adminId);
+    }
+
+    /**
+     * ADMIN: modificar fallas a los tecnicos
+     * (/{userId}/fallas/{adminId})
+     * */
+    @PutMapping("/{userId}/fallas/{adminId}")
+    public Usuario agregarFallasTecnico(@PathVariable("userId") Long tecnicoId, @PathVariable Long adminId, @RequestParam int cantidad) {
+        return usuarioService.modificarFallas(tecnicoId, adminId, cantidad);
+    }
+
+    /**
+     * ADMIN: modificar marcas de retorno a los técnicos
+     */
+    @PutMapping("/{userId}/marcas-retorno/{adminId}")
+    public Usuario agregarMarcasTecnicos(@PathVariable("userId") Long tecnicoId, @PathVariable Long adminId, @RequestParam int cantidad) {
+        return usuarioService.modificarMarcas(tecnicoId, adminId, cantidad);
     }
 
     /**
