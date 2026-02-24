@@ -32,12 +32,16 @@ export default function Login() {
     setError('');
 
     try {
+      // El backend espera { email, password } en LoginRequest
       const response = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          email: formData.userId,
+          password: formData.password,
+        }),
       });
 
       if (response.ok) {

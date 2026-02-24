@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
+import { apiFetch } from '../utils/api';
 
 /**
  * Componente Admin - Panel de administración
@@ -16,6 +17,10 @@ export default function Admin() {
   const [tecnicos, setTecnicos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('usuarios');
+  const [showCrearModal, setShowCrearModal] = useState(false);
+  const [crearForm, setCrearForm] = useState({ nombre: '', email: '', rol: 'trabajador' });
+  const [crearError, setCrearError] = useState('');
+  const [crearLoading, setCrearLoading] = useState(false);
 
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const role = (user.rol || user.tipo || "").toLowerCase();
@@ -30,7 +35,7 @@ export default function Admin() {
 
   const fetchUsuarios = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/usuarios');
+      const response = await apiFetch('/api/usuarios');
       if (response.ok) {
         const data = await response.json();
         setUsuarios(data);
@@ -44,7 +49,7 @@ export default function Admin() {
 
   const fetchTecnicos = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/usuarios');
+      const response = await apiFetch('/api/usuarios');
       if (response.ok) {
         const data = await response.json();
         const tecnicosData = data.filter(u => u.rol === 'tecnico');
@@ -58,8 +63,8 @@ export default function Admin() {
   const handleBloquear = async (usuarioId, bloquear) => {
     try {
       const endpoint = bloquear ? 'bloquear' : 'desbloquear';
-      const response = await fetch(
-        `http://localhost:8080/api/usuarios/${usuarioId}/${endpoint}/${user.id}`,
+      const response = await apiFetch(
+        `/api/usuarios/${usuarioId}/${endpoint}/${user.id}`,
         { method: 'PUT' }
       );
 
@@ -77,13 +82,55 @@ export default function Admin() {
     }
   };
 
+  const handleModificarFallas = async (tecnicoId, cantidad) => {
+    try {
+      const response = await apiFetch(
+        `/api/usuarios/${tecnicoId}/fallas/${user.id}?cantidad=${cantidad}`,
+        { method: 'PUT' }
+      );
+      if (response.ok) {
+        const msg = cantidad > 0 ? `✅ Se agregó ${cantidad} falla(s)` : `✅ Se restó ${-cantidad} falla(s)`;
+        alert(msg);
+        fetchUsuarios();
+        fetchTecnicos();
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        alert(errorData.message || errorData.error || 'Error al modificar fallas');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('❌ Error de conexión');
+    }
+  };
+
+  const handleModificarMarcas = async (tecnicoId, cantidad) => {
+    try {
+      const response = await apiFetch(
+        `/api/usuarios/${tecnicoId}/marcas-retorno/${user.id}?cantidad=${cantidad}`,
+        { method: 'PUT' }
+      );
+      if (response.ok) {
+        const msg = cantidad > 0 ? `✅ Se agregó ${cantidad} marca(s) de retorno` : `✅ Se restó ${-cantidad} marca(s) de retorno`;
+        alert(msg);
+        fetchUsuarios();
+        fetchTecnicos();
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        alert(errorData.message || errorData.error || 'Error al modificar marcas');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('❌ Error de conexión');
+    }
+  };
+
   const handleBlanquearPassword = async (usuarioId) => {
     const confirmar = confirm('¿Está seguro de blanquear la contraseña? Se restablecerá al ID del usuario.');
     if (!confirmar) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/usuarios/${usuarioId}/blanquear/${user.id}`,
+      const response = await apiFetch(
+        `/api/usuarios/${usuarioId}/blanquear/${user.id}`,
         { method: 'PUT' }
       );
 
@@ -97,6 +144,43 @@ export default function Admin() {
     } catch (error) {
       console.error('Error:', error);
       alert('❌ Error de conexión');
+    }
+  };
+
+  const handleCrearUsuario = async (e) => {
+    e.preventDefault();
+    setCrearError('');
+    if (!crearForm.nombre.trim() || !crearForm.email.trim()) {
+      setCrearError('Nombre y email son obligatorios');
+      return;
+    }
+    setCrearLoading(true);
+    try {
+      const response = await apiFetch(`/api/usuarios/crear/${user.id}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          nombre: crearForm.nombre.trim(),
+          email: crearForm.email.trim(),
+          rol: crearForm.rol,
+        }),
+      });
+      if (response.ok) {
+        const nuevoUsuario = await response.json();
+        alert(`✅ Usuario creado exitosamente. ID: ${nuevoUsuario.id}. Contraseña inicial: ${nuevoUsuario.id}`);
+        setShowCrearModal(false);
+        setCrearForm({ nombre: '', email: '', rol: 'trabajador' });
+        fetchUsuarios();
+        fetchTecnicos();
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        const msg = errorData.message || errorData.error || (await response.text()) || 'Error al crear usuario';
+        setCrearError(msg);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setCrearError('Error de conexión con el servidor');
+    } finally {
+      setCrearLoading(false);
     }
   };
 
@@ -184,6 +268,15 @@ export default function Admin() {
             {/* Pestaña de Usuarios */}
             {activeTab === 'usuarios' && (
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-gray-800">Listado de usuarios</h3>
+                  <button
+                    onClick={() => { setShowCrearModal(true); setCrearError(''); setCrearForm({ nombre: '', email: '', rol: 'trabajador' }); }}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  >
+                    ➕ Crear Usuario
+                  </button>
+                </div>
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
@@ -285,20 +378,58 @@ export default function Admin() {
                     </div>
 
                     <div className="space-y-3">
-                      {/* Fallas */}
+                      {/* Fallas - con botones +/- para admin */}
                       <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg">
                         <span className="text-sm font-medium text-gray-700">⚠️ Fallas</span>
-                        <span className={`text-2xl font-bold ${tecnico.fallas >= 3 ? 'text-red-600' : 'text-gray-800'}`}>
-                          {tecnico.fallas || 0}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleModificarFallas(tecnico.id, -1)}
+                            disabled={(tecnico.fallas || 0) <= 0}
+                            className="w-7 h-7 rounded bg-red-200 hover:bg-red-300 text-red-800 font-bold disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+                            title="Restar falla"
+                          >
+                            −
+                          </button>
+                          <span className={`text-2xl font-bold min-w-[1.5rem] text-center ${tecnico.fallas >= 3 ? 'text-red-600' : 'text-gray-800'}`}>
+                            {tecnico.fallas || 0}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleModificarFallas(tecnico.id, 1)}
+                            className="w-7 h-7 rounded bg-red-200 hover:bg-red-300 text-red-800 font-bold text-sm"
+                            title="Sumar falla"
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
 
-                      {/* Marcas de Retorno */}
+                      {/* Marcas de Retorno - con botones +/- para admin */}
                       <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
                         <span className="text-sm font-medium text-gray-700">🔄 Marcas Retorno</span>
-                        <span className="text-2xl font-bold text-gray-800">
-                          {tecnico.marcasRetorno || 0}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleModificarMarcas(tecnico.id, -1)}
+                            disabled={(tecnico.marcasRetorno || 0) <= 0}
+                            className="w-7 h-7 rounded bg-yellow-200 hover:bg-yellow-300 text-yellow-800 font-bold disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+                            title="Restar marca de retorno"
+                          >
+                            −
+                          </button>
+                          <span className="text-2xl font-bold min-w-[1.5rem] text-center text-gray-800">
+                            {tecnico.marcasRetorno || 0}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleModificarMarcas(tecnico.id, 1)}
+                            className="w-7 h-7 rounded bg-yellow-200 hover:bg-yellow-300 text-yellow-800 font-bold text-sm"
+                            title="Sumar marca de retorno"
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
 
                       {/* Estado */}
@@ -332,6 +463,79 @@ export default function Admin() {
                     No hay técnicos registrados en el sistema
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Modal Crear Usuario */}
+            {showCrearModal && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">Crear nuevo usuario</h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    La contraseña inicial será el ID del usuario (deberá cambiarla en el primer inicio de sesión).
+                  </p>
+                  <form onSubmit={handleCrearUsuario} className="space-y-4">
+                    {crearError && (
+                      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                        {crearError}
+                      </div>
+                    )}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Nombre *</label>
+                      <input
+                        type="text"
+                        value={crearForm.nombre}
+                        onChange={(e) => setCrearForm({ ...crearForm, nombre: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Ej: Juan Pérez"
+                        required
+                        disabled={crearLoading}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                      <input
+                        type="email"
+                        value={crearForm.email}
+                        onChange={(e) => setCrearForm({ ...crearForm, email: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Ej: juan@empresa.com"
+                        required
+                        disabled={crearLoading}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Rol</label>
+                      <select
+                        value={crearForm.rol}
+                        onChange={(e) => setCrearForm({ ...crearForm, rol: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        disabled={crearLoading}
+                      >
+                        <option value="trabajador">Trabajador</option>
+                        <option value="tecnico">Técnico</option>
+                        <option value="admin">Administrador</option>
+                      </select>
+                    </div>
+                    <div className="flex gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => { setShowCrearModal(false); setCrearError(''); }}
+                        className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                        disabled={crearLoading}
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400"
+                        disabled={crearLoading}
+                      >
+                        {crearLoading ? 'Creando...' : 'Crear Usuario'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             )}
           </>

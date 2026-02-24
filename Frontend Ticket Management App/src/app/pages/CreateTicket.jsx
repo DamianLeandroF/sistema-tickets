@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
+import { apiFetch } from '../utils/api';
 
 /**
  * Componente CreateTicket - Formulario para crear un nuevo ticket
@@ -57,11 +58,8 @@ export default function CreateTicket() {
       }
 
       // Endpoint correcto: POST /api/tickets/crear/{trabajadorId}
-      const response = await fetch(`http://localhost:8080/api/tickets/crear/${user.id}`, {
+      const response = await apiFetch(`/api/tickets/crear/${user.id}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(formData),
       });
 

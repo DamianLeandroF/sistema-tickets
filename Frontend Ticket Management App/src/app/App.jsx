@@ -9,6 +9,7 @@ import CreateTicket from './pages/CreateTicket';
 import Perfil from './pages/Perfil';
 import Soporte from './pages/Soporte';
 import Admin from './pages/Admin';
+import ProtectedRoute from './components/ProtectedRoute';
 
 /**
  * Componente Principal App
@@ -37,13 +38,13 @@ export default function App() {
         {/* Ruta de login (página inicial) */}
         <Route path="/" element={<Login />} />
 
-        {/* Rutas protegidas (sin protección real por ahora) */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/tickets" element={<Tickets />} />
-        <Route path="/create-ticket" element={<CreateTicket />} />
-        <Route path="/perfil" element={<Perfil />} />
-        <Route path="/soporte" element={<Soporte />} />
-        <Route path="/admin" element={<Admin />} />
+        {/* Rutas protegidas con JWT */}
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/tickets" element={<ProtectedRoute><Tickets /></ProtectedRoute>} />
+        <Route path="/create-ticket" element={<ProtectedRoute><CreateTicket /></ProtectedRoute>} />
+        <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
+        <Route path="/soporte" element={<ProtectedRoute><Soporte /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
 
         {/* Ruta por defecto: redirigir al login */}
         <Route path="*" element={<Navigate to="/" replace />} />

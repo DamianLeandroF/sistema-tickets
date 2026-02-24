@@ -7,6 +7,7 @@ import com.grupo.tpFinal.model.Ticket;
 import com.grupo.tpFinal.model.Usuario;
 import com.grupo.tpFinal.repository.TicketRepository;
 import com.grupo.tpFinal.repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -113,6 +114,7 @@ public class TicketService {
     /**
      * Confirmar resolución (trabajador que creó el ticket)
      */
+    @Transactional
     public Ticket confirmarResolucion(Long ticketId, Long trabajadorId, boolean confirmado) {
         Ticket ticket = ticketRepo.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket no encontrado"));
@@ -133,7 +135,14 @@ public class TicketService {
             
             // Si el ticket fue reabierto y se resuelve, limpiar una falla del técnico
             if (ticket.isReabierto() && tecnico != null && tecnico.getFallas() > 0) {
+
                 tecnico.setFallas(tecnico.getFallas() - 1);
+
+                // Desbloquear si corresponde
+                if (tecnico.getFallas() < 3) {
+                    tecnico.setBloqueado(false);
+                }
+
                 usuarioRepo.save(tecnico);
             }
         } else {
@@ -154,6 +163,7 @@ public class TicketService {
                 
                 usuarioRepo.save(tecnico);
             }
+
         }
         
         return ticketRepo.save(ticket);
@@ -162,6 +172,7 @@ public class TicketService {
     /**
      * Solicitar reapertura de ticket (técnico)
      */
+    @Transactional
     public Ticket solicitarReapertura(Long ticketId, Long tecnicoId) {
         Ticket ticket = ticketRepo.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket no encontrado"));

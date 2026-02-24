@@ -2,15 +2,15 @@ package com.grupo.tpFinal.dto;
 
 public class LoginRequest {
 
-    private String userId; // puede ser email o ID
+    private String email; // puede ser email o ID
     private String password;
 
-    public String getUserId() {
-        return userId;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

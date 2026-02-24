@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import TicketCard from '../components/TicketCard';
+import { apiFetch } from '../utils/api';
 
 /**
  * Componente Tickets - Listado de tickets
@@ -39,11 +40,11 @@ export default function Tickets() {
   const fetchTicketsPendientes = async () => {
     try {
       // Obtener tickets NO_ATENDIDO
-      const responseNoAtendidos = await fetch('http://localhost:8080/api/tickets/estado/NO_ATENDIDO');
+      const responseNoAtendidos = await apiFetch('/api/tickets/estado/NO_ATENDIDO');
       const noAtendidos = responseNoAtendidos.ok ? await responseNoAtendidos.json() : [];
 
       // Obtener tickets REABIERTO
-      const responseReabiertos = await fetch('http://localhost:8080/api/tickets/estado/REABIERTO');
+      const responseReabiertos = await apiFetch('/api/tickets/estado/REABIERTO');
       const reabiertos = responseReabiertos.ok ? await responseReabiertos.json() : [];
 
       // Combinar ambos arrays
@@ -61,16 +62,16 @@ export default function Tickets() {
         return; 
       }
 
-      let url = 'http://localhost:8080/api/tickets';
+      let url = '/api/tickets';
       
       // Ajustar URL según rol
       if (esTrabajador) {
-        url = `http://localhost:8080/api/tickets/trabajador/${user.id}`;
+        url = `/api/tickets/trabajador/${user.id}`;
       } else if (esTecnico) {
-        url = `http://localhost:8080/api/tickets/tecnico/${user.id}`;
+        url = `/api/tickets/tecnico/${user.id}`;
       }
 
-      const response = await fetch(url);
+      const response = await apiFetch(url);
 
       if (response.ok) {
         const data = await response.json();
@@ -80,7 +81,7 @@ export default function Tickets() {
         const estados = ['NO_ATENDIDO', 'ATENDIDO', 'RESUELTO', 'FINALIZADO', 'REABIERTO'];
         const results = await Promise.all(
           estados.map((e) =>
-            fetch(`http://localhost:8080/api/tickets/estado/${e}`).then((r) =>
+            apiFetch(`/api/tickets/estado/${e}`).then((r) =>
               r.ok ? r.json() : []
             )
           )
@@ -118,7 +119,7 @@ export default function Tickets() {
             alert('Solo los técnicos pueden atender tickets');
             return;
           }
-          url = `http://localhost:8080/api/tickets/${ticketId}/asignar/${user.id}`;
+          url = `/api/tickets/${ticketId}/asignar/${user.id}`;
           break;
 
         case 'resolver':
@@ -127,7 +128,7 @@ export default function Tickets() {
             alert('Solo los técnicos pueden resolver tickets');
             return;
           }
-          url = `http://localhost:8080/api/tickets/${ticketId}/resolver/${user.id}`;
+          url = `/api/tickets/${ticketId}/resolver/${user.id}`;
           break;
 
         case 'confirmar':
@@ -136,7 +137,7 @@ export default function Tickets() {
             alert('Solo el trabajador puede confirmar la resolución');
             return;
           }
-          url = `http://localhost:8080/api/tickets/${ticketId}/confirmar/${user.id}`;
+          url = `/api/tickets/${ticketId}/confirmar/${user.id}`;
           body = JSON.stringify({ confirmado: true });
           break;
 
@@ -149,7 +150,7 @@ export default function Tickets() {
           const confirmRechazar = confirm('¿Está seguro que desea rechazar la resolución? El técnico recibirá una falla.');
           if (!confirmRechazar) return;
           
-          url = `http://localhost:8080/api/tickets/${ticketId}/confirmar/${user.id}`;
+          url = `/api/tickets/${ticketId}/confirmar/${user.id}`;
           body = JSON.stringify({ confirmado: false });
           break;
 
@@ -162,7 +163,7 @@ export default function Tickets() {
           const confirmSolicitud = confirm('¿Desea solicitar la reapertura de este ticket? Esto puede afectar sus marcas/fallas.');
           if (!confirmSolicitud) return;
           
-          url = `http://localhost:8080/api/tickets/${ticketId}/solicitar-reapertura/${user.id}`;
+          url = `/api/tickets/${ticketId}/solicitar-reapertura/${user.id}`;
           break;
 
         default:
@@ -170,11 +171,8 @@ export default function Tickets() {
           return;
       }
 
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method: method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: body,
       });
 

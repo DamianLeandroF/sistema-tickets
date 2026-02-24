@@ -1,10 +1,15 @@
 package com.grupo.tpFinal.service;
 
+import com.grupo.tpFinal.config.JwtUtil;
 import com.grupo.tpFinal.dto.LoginRequest;
 import com.grupo.tpFinal.dto.PasswordDTO;
 import com.grupo.tpFinal.enums.Rol;
 import com.grupo.tpFinal.model.Usuario;
 import com.grupo.tpFinal.repository.UsuarioRepository;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +18,12 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private HttpServletRequest request;
 
     public UsuarioService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
@@ -23,8 +34,19 @@ public class UsuarioService {
     // -------------------------------
 
     public Usuario getUsuarioActual() {
-        // PROVISORIO (hasta tener auth real)
-        return usuarioRepository.findById(1L)
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Token no presente");
+        }
+
+        String token = authHeader.substring(7);
+
+        Claims claims = jwtUtil.obtenerClaims(token);
+
+        Long userId = claims.get("id", Long.class);
+
+        return usuarioRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 
@@ -61,12 +83,12 @@ public class UsuarioService {
         Usuario usuario = null;
         
         // Intentar buscar por email primero
-        usuario = usuarioRepository.findByEmail(request.getUserId()).orElse(null);
+        usuario = usuarioRepository.findByEmail(request.getEmail()).orElse(null);
         
         // Si no se encontró por email, intentar por ID
         if (usuario == null) {
             try {
-                Long id = Long.parseLong(request.getUserId());
+                Long id = Long.parseLong(request.getEmail());
                 usuario = usuarioRepository.findById(id).orElse(null);
             } catch (NumberFormatException e) {
                 // No es un número, continuar
@@ -203,5 +225,57 @@ public class UsuarioService {
         }
         
         return tecnico;
+    }
+
+    public Usuario modificarFallas(Long tecnicoId, Long adminId, int cantidad){
+        Usuario admin = usuarioRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("Administrador no encontrado"));
+
+        if (admin.getRol() != Rol.admin) {
+            throw new RuntimeException("Solo los administradores pueden modificar las fallas");
+        }
+
+        Usuario tecnico = usuarioRepository.findById(tecnicoId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (tecnico.getRol() != Rol.tecnico) {
+            throw new RuntimeException("Solo se pueden modificar fallas de técnicos");
+        }
+
+        int nuevasFallas = tecnico.getFallas() + cantidad;
+
+        if (nuevasFallas < 0) {
+            throw new RuntimeException("Las fallas no pueden ser negativas");
+        }
+
+        tecnico.setFallas(nuevasFallas);
+
+        return usuarioRepository.save(tecnico);
+    }
+
+    public Usuario modificarMarcas(Long tecnicoId, Long adminId, int cantidad){
+        Usuario admin = usuarioRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("Administrador no encontrado"));
+
+        if (admin.getRol() != Rol.admin) {
+            throw new RuntimeException("Solo los administradores pueden modificar las marcas");
+        }
+
+        Usuario tecnico = usuarioRepository.findById(tecnicoId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (tecnico.getRol() != Rol.tecnico) {
+            throw new RuntimeException("Solo se pueden modificar marcas de técnicos");
+        }
+
+        int nuevasMarcas = tecnico.getMarcasRetorno() + cantidad;
+
+        if (nuevasMarcas < 0) {
+            throw new RuntimeException("Las fallas no pueden ser negativas");
+        }
+
+        tecnico.setMarcasRetorno(nuevasMarcas);
+
+        return usuarioRepository.save(tecnico);
     }
 }
