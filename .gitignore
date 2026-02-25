@@ -1,13 +1,4 @@
-# Java / Maven
-tpFinal/target/
-tpFinal/.mvn/
-tpFinal/mvnw
-tpFinal/mvnw.cmd
-*.class
-*.jar
-*.war
-*.ear
-*.log
+
 
 # Node / React
 Frontend Ticket Management App/node_modules/
