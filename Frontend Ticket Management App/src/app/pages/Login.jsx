@@ -152,15 +152,7 @@ export default function Login() {
           </button>
         </form>
 
-        {/* Usuarios de prueba */}
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm font-medium text-blue-800 mb-2">Usuarios de prueba:</p>
-          <div className="text-xs text-blue-700 space-y-1">
-            <p><strong>Admin:</strong> admin@iset.com / 1</p>
-            <p><strong>Técnico:</strong> juan@iset.com / 2</p>
-            <p><strong>Trabajador:</strong> pedro@iset.com / 3</p>
-          </div>
-        </div>
+
       </div>
     </div>
   );

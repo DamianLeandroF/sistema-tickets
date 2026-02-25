@@ -290,28 +290,7 @@ export default function Perfil() {
               </div>
             )}
 
-            {/* Información sobre el endpoint */}
-            <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <h2 className="text-lg text-blue-800 mb-2">
-                Endpoint de API
-              </h2>
-              <div className="space-y-2 text-sm text-blue-700">
-                <p>
-                  <strong>Obtener perfil:</strong> GET /api/users/me
-                </p>
-                <p>
-                  <strong>Cambiar contraseña:</strong> PUT /api/users/change-password
-                </p>
-                {userInfo.rol === 'Administrador' && (
-                  <p>
-                    <strong>Gestionar usuarios:</strong> GET /api/users
-                  </p>
-                )}
-                <p className="mt-4">
-                  La información del usuario se obtiene del token de autenticación.
-                </p>
-              </div>
-            </div>
+
           </div>
         )}
       </main>

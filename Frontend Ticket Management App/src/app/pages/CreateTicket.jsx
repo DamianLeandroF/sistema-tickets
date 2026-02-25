@@ -209,32 +209,7 @@ export default function CreateTicket() {
             </form>
           </div>
 
-          {/* Información del endpoint */}
-          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-6">
-            <h2 className="text-lg font-semibold text-blue-800 mb-2">
-              📡 Endpoint de API
-            </h2>
-            <div className="space-y-2 text-sm text-blue-700">
-              <p>
-                <strong>Crear ticket:</strong> POST /api/tickets/crear/{user.id}
-              </p>
-              <p className="mt-2">
-                <strong>Body:</strong>
-              </p>
-              <pre className="bg-blue-100 p-3 rounded text-xs overflow-x-auto">
-{`{
-  "titulo": "string (máx 150 caracteres)",
-  "descripcion": "string"
-}`}
-              </pre>
-              <p className="mt-4">
-                ✅ El ticket se crea con estado <strong>NO_ATENDIDO</strong>
-              </p>
-              <p>
-                ✅ Se asocia automáticamente al trabajador autenticado
-              </p>
-            </div>
-          </div>
+
         </div>
       </main>
     </div>
