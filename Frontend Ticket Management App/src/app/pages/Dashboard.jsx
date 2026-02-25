@@ -279,19 +279,7 @@ export default function Dashboard() {
           </>
         )}
 
-        {/* Información adicional */}
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h2 className="text-lg font-semibold text-blue-800 mb-2">
-            📊 Información del Sistema
-          </h2>
-          <p className="text-sm text-blue-700">
-            Este dashboard muestra estadísticas en tiempo real de todos los
-            tickets en el sistema.
-          </p>
-          <p className="text-sm text-blue-700 mt-2">
-            <strong>Endpoint:</strong> GET /api/tickets/stats
-          </p>
-        </div>
+
       </main>
     </div>
   );
