@@ -84,11 +84,6 @@ export default function Dashboard() {
                     <p className="text-blue-100 mb-2 text-lg">Total de Tickets</p>
                     <p className="text-5xl font-bold">{stats.total}</p>
                   </div>
-                  <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
                 </div>
               </div>
             </div>
